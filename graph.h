@@ -1,9 +1,12 @@
 #ifndef GRAPH
 #define GRAPH
 
+
+
 const int ROOMS_LARGE = 100;
 const int ROOMS_MED = 50;
 const int ROOMS_SM = 10;
+
 
 enum NUM_ROOMS
 {
@@ -17,15 +20,18 @@ class room
 public:
 
 	room();
+	room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist);
+	//room(const room& source);
 	~room();
 
-	bool insert(room * source, room * pointerToDifferentVariable);
+	void insert(room * source);
 	//void generate();
 	void display();
-protected:
-		room * next;
+
+	void set_doors(int rooms_in_graph);
 
 private:
+	room * next;
 	void display(room * source);
 	room ** doors [1];
 	int perimeter;
@@ -43,15 +49,19 @@ class graph
 {
 public:
 	graph();
+	//graph(const graph& source);
 	graph(int rooms);
 	~graph();
 
 	void generate(int num_rooms);
-	bool insert(room * source);
+	void insert(room * source);
 	void display();
 
 private:
+	void set_doors(room * source, int rooms_in_graph);
 	void display(room * source);
 	room * root;
 };
-#endif GRAPH
+
+
+#endif
