@@ -2,8 +2,9 @@
 #define GRAPH
 #include <fstream>
 
+const int MAX_DOORS = 8;
+
 class graph; //forward declaration
-class room; //forward declaration
 
 class room
 {
@@ -40,6 +41,7 @@ class graph
 {
 public:
 	graph();
+	//graph(const graph& source);
 	graph(int rooms);
 	~graph();
 
@@ -50,6 +52,7 @@ public:
 
 private:
 	void destroy(room * source);
+	//void display(room * source);
 	room * root;
 	room * entrance;
 	room * exit;

@@ -11,7 +11,8 @@ const int MAX_WIDTH = 12;
 const int MIN_WIDTH = 6;
 const int MAX_HEIGHT = 10;
 const int MIN_HEIGHT = 3;
-const int ENEM_CHANCE = 3; //1/3 chance of there being enemies in a room
+const int CHANCE_OF_ENEMIES = 2; //1 in x chance
+const int CHANCE_OF_HALLWAY = 5; //1 in x chance
 
 graph::graph()
 {
@@ -47,7 +48,7 @@ void graph::destroy(room * source)
 
 void graph::generate(int num_rooms)
 {
-	srand (time(NULL));
+	srand(time(NULL));
 
 	//Initialize parameters
 	int priz = 0;
@@ -61,19 +62,28 @@ void graph::generate(int num_rooms)
 	room * temp = NULL;
 	int chance_enem = 0;
 
+
 	//create a number of rooms equal to num_rooms
 	for(int i = 0; i < num_rooms; i++)
 	{
+		//reset parameters
+		priz = 0;
+		enem = 0;
+		dist = 0;
+		_hall = false;
+		temp = NULL;
+		chance_enem = 0;
+
 		//Make width and height default to max hallway width. 
 		widt = 2;
 		heigh = 2;
 		peri = 0;
-		hall = rand()%10;// 1/10 chance of hallway
+		hall = rand()%CHANCE_OF_HALLWAY;// 1/10 chance of hallway
 
 		//If the new room is not a hallway
 		if(hall != 0)
 		{
-
+			_hall = false;
 			widt = rand()%(MAX_WIDTH-MIN_WIDTH)+MIN_WIDTH;;//Random: 6-12 
 			heigh = rand()%(MAX_HEIGHT-MIN_HEIGHT)+MIN_HEIGHT;//Random: 3-10
 			peri = widt*2+heigh*2;
@@ -83,7 +93,7 @@ void graph::generate(int num_rooms)
 		{
 			_hall = true;
 			
-			//Randomize if the hallway will go vertical/horizontal
+			//Randomize if the hallway will go vertical or horizontal
 			if(rand()%2)
 			{
 				heigh = rand()%(MAX_HEIGHT-MIN_HEIGHT)+MIN_HEIGHT;//Random: 3-10
@@ -96,8 +106,8 @@ void graph::generate(int num_rooms)
 			}
 		}
 
-		chance_enem = rand()%ENEM_CHANCE;//The problem here is that rand is based off of time, and time doesn't change much in the microseconds
-										 // it takes for the loop to repeat. You end up with repeat # of enem for about 3 rooms. 
+		chance_enem = rand()%CHANCE_OF_ENEMIES;
+
 		//Randomize parameters
 		if(chance_enem == 0)
 		{
