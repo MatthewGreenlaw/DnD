@@ -61,6 +61,7 @@ private:
 	int distance;//What is this for?
 	int number_doors;
 	int room_number;
+	bool not_already_a_door(room * source, int num_doors);
 };
 
 class graph

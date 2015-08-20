@@ -57,22 +57,58 @@ room * room::get_next()
 
 void room::set_doors(graph * home, int rooms_in_graph)
 {
-	int num_doors = 0;
+	int doors_to_add = 0;
 
 	if(is_hallway)
 	{
-		num_doors = perimeter/5;
+		doors_to_add = perimeter/5;
 	}
 	else
 	{
-		num_doors = perimeter/10;
+		doors_to_add = perimeter/10;
 	}
 	
+	//point first door to the next room
+	if(this->next)
+	{
+		doors[0] = this->next;
+	}
+	//The last room points to the end room
+	else
+	{
+		doors[0] = new room(0,0,false,0,0,0,0,0);
+	}
+	number_doors++;
+	doors_to_add--;
+
+	for(int i = 1; i < doors_to_add-2; i++)
+	{
+		
+		room * temp = home->get_random_room();
+
+		if(not_already_a_door(temp, number_doors) && temp->room_number != this->room_number)
+		{
+			doors[i] = temp;
+			number_doors++;
+		}
+		else
+		{
+			i--;
+		}
+	}
+}
+
+bool room::not_already_a_door(room * source, int num_doors)
+{
 	for(int i = 0; i < num_doors-1; i++)
 	{
-		number_doors++;
-		doors[i] = home->get_random_room();
+		if(source == doors[i])
+		{
+			return false;
+		}
 	}
+
+	return true;
 }
 
 void room::insert(room * source)
@@ -105,6 +141,10 @@ void room::display(room * source)
 		if(is_hallway)
 		{
 			cout << " (Hallway)" << endl;
+		}
+		else
+		{
+			cout << endl;
 		}
 
 		cout << "Width X Height: " << width << "X" << height << endl;
