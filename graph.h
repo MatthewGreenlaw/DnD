@@ -1,6 +1,6 @@
 #ifndef GRAPH
 #define GRAPH
-
+#include <fstream>
 
 
 const int ROOMS_LARGE = 100;
@@ -43,14 +43,14 @@ public:
 	~room();
 
 	void insert(room * source);
-	void display();
+	void display(std::ofstream& output);
 	void set_doors(room * _exit, graph * container, int rooms_in_graph);
 	room * get_next();
 
 private:
 	room * next;
 	room * doors[MAX_DOORS];
-	void display(room * source);
+	void display(room * source, std::ofstream& output);
 	int perimeter;
 	int prize;
 	int enemies;
@@ -79,11 +79,9 @@ public:
 
 private:
 	void destroy(room * source);
-	void display(room * source);
+	//void display(room * source);
 	room * root;
 	room * exit;
 	int number_rooms;
 };
-
-
 #endif

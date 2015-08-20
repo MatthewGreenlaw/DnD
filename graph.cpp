@@ -2,6 +2,8 @@
 #include "graph.h"
 #include <cstdlib>
 #include <ctime>
+#include <string>
+
 
 using namespace std;
 
@@ -88,8 +90,8 @@ void graph::generate(int num_rooms)
 		}
 
 		//Randomize parameters
-		enem = rand()%(peri/2);//Random: 0-(half of parameter)
-		if(enem >0) priz = rand()%(enem*2);//Random: 0-(enemies*2)
+		enem = rand()%(peri/3);//Random: 0-(quarter of parameter)
+		if(enem > 0) priz = rand()%(enem*2);//Random: 0-(enemies*2)
 		dist = rand();//Unsure why we have distance. Left it a random number
 
 		//Convert random number to bool
@@ -136,11 +138,10 @@ room * graph::get_random_room()
 
 void graph::display()
 {
-	display(root);
-}
+	ofstream output;
+	output.open("output/output"+to_string(time(NULL))+".txt");
 
-void graph::display(room * source)
-{
-	source->display();
-}
+	root->display(output);
 
+	output.close();
+}

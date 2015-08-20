@@ -2,6 +2,7 @@
 #include "graph.h"
 #include <cstdlib>
 #include <ctime>
+//#include <fstream>
 
 using namespace std;
 
@@ -150,35 +151,42 @@ void room::insert(room * source)
 	}
 }
 
-void room::display()
+void room::display(ofstream& output)
 {
-	display(this);
+	display(this, output);
 
 	if(next)
 	{
-		next->display();
+		next->display(output);
 	}
 }
 
-void room::display(room * source)
+void room::display(room * source, ofstream& output)
 {
+	
+
 	if(source)
 	{
-		cout << "Room: " << room_number;
+		//output << time << endl;
+		output << "************************************" << endl;
+		output << "Room: " << room_number;
 		if(hallway)
 		{
-			cout << " (Hallway)" << endl;
+			output << " (Hallway)" << endl;
 		}
 		else
 		{
-			cout << endl;
+			output << endl;
 		}
 
-		cout << "Width X Height: " << width << "X" << height << endl;
+		output << "Width X Height: " << width << "X" << height << endl;
+		output << "#Enemies: " << enemies << endl;
+		output << "Loot: " << prize << endl;
 
 		for(int i = 0; i < number_doors; i++)
 		{
-			cout << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
+			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
 		}
 	}
+	
 }
