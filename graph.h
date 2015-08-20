@@ -44,7 +44,7 @@ public:
 
 	void insert(room * source);
 	void display(std::ofstream& output);
-	void set_doors(room * _exit, graph * container, int rooms_in_graph);
+	void set_doors(room * _entrance, room * _exit, graph * container, int rooms_in_graph);
 	room * get_next();
 
 private:
@@ -81,6 +81,7 @@ private:
 	void destroy(room * source);
 	//void display(room * source);
 	room * root;
+	room * entrance;
 	room * exit;
 	int number_rooms;
 };

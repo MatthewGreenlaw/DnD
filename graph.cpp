@@ -11,10 +11,12 @@ const int MAX_WIDTH = 12;
 const int MIN_WIDTH = 6;
 const int MAX_HEIGHT = 10;
 const int MIN_HEIGHT = 3;
+const int ENEM_CHANCE = 3; //1/10 chance of there being enemies in a room
 
 graph::graph()
 {
 	root = NULL;
+	entrance = new room;
 	exit = new room(true);
 	number_rooms = 0;
 }
@@ -26,6 +28,7 @@ graph::~graph()
 		destroy(root);
 	}
 
+	delete entrance;
 	delete exit;
 }
 
@@ -56,6 +59,7 @@ void graph::generate(int num_rooms)
 	int peri = 0;
 	bool _hall = false;
 	room * temp = NULL;
+	int chance_enem = 0;
 
 	//create a number of rooms equal to num_rooms
 	for(int i = 0; i < num_rooms; i++)
@@ -64,11 +68,12 @@ void graph::generate(int num_rooms)
 		widt = 2;
 		heigh = 2;
 		peri = 0;
-		hall = rand()%2;//Random: 0-1
+		hall = rand()%10;// 1/10 chance of hallway
 
 		//If the new room is not a hallway
-		if(hall == 0)
+		if(hall != 0)
 		{
+
 			widt = rand()%(MAX_WIDTH-MIN_WIDTH)+MIN_WIDTH;;//Random: 6-12 
 			heigh = rand()%(MAX_HEIGHT-MIN_HEIGHT)+MIN_HEIGHT;//Random: 3-10
 			peri = widt*2+heigh*2;
@@ -76,6 +81,8 @@ void graph::generate(int num_rooms)
 		//If the new room is a hallway
 		else
 		{
+			_hall = true;
+			
 			//Randomize if the hallway will go vertical/horizontal
 			if(rand()%2)
 			{
@@ -89,16 +96,16 @@ void graph::generate(int num_rooms)
 			}
 		}
 
+		chance_enem = rand()%ENEM_CHANCE;//The problem here is that rand is based off of time, and time doesn't change much in the microseconds
+										 // it takes for the loop to repeat. You end up with repeat # of enem for about 3 rooms. 
 		//Randomize parameters
-		enem = rand()%(peri/3);//Random: 0-(quarter of parameter)
-		if(enem > 0) priz = rand()%(enem*2);//Random: 0-(enemies*2)
-		dist = rand();//Unsure why we have distance. Left it a random number
-
-		//Convert random number to bool
-		if(hall % 2)//If hall is even
+		if(chance_enem == 0)
 		{
-			_hall = true;
+			enem = rand()%(peri/3);//Random: 0-(quarter of parameter)
+			if(enem > 0) priz = rand()%(enem*2);//Random: 0-(enemies*2)
 		}
+
+		dist = rand();//Unsure why we have distance. Left it a random number
 
 		//Create a new room using the above parameters and insert it into the graph
 		temp = new room(priz, enem, _hall, widt, heigh, peri, dist, i+1);
@@ -106,7 +113,7 @@ void graph::generate(int num_rooms)
 	}
 
 	//build the adjacentcy list of doors for each room once the graph is built
-	root->set_doors(exit, this, num_rooms);
+	root->set_doors(entrance, exit, this, num_rooms);
 
 }
 

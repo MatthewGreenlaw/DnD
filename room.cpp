@@ -78,7 +78,7 @@ room * room::get_next()
 	return next;
 }
 
-void room::set_doors(room * _exit, graph * container, int rooms_in_graph)
+void room::set_doors(room * _entrance, room * _exit, graph * container, int rooms_in_graph)
 {
 	room * temp = NULL;
 	int doors_to_add = 0;
@@ -95,17 +95,19 @@ void room::set_doors(room * _exit, graph * container, int rooms_in_graph)
 	//point first door to the next room if there is one
 	if(this->next)
 	{
-		doors[0] = this->next;
+		doors[0] = _entrance;
+		doors[1] = this->next;
 	}
 	//The last room points to the exit
 	else
 	{
-		doors[0] = _exit;
+		doors[0] = _entrance;
+		doors[1] = _exit;
 	}
-	number_doors++;
-	doors_to_add--;
+	number_doors = number_doors + 2;
+	//doors_to_add = doors_to_add + 2;//Played around with this being -2. leaving it out all together seems best.
 
-	for(int i = 1; i < doors_to_add-2; i++)
+	for(int i = 2; i < doors_to_add; i++)
 	{
 		temp = container->get_random_room();
 
@@ -122,7 +124,7 @@ void room::set_doors(room * _exit, graph * container, int rooms_in_graph)
 
 	if(next)
 	{
-		next->set_doors(_exit, container, rooms_in_graph);
+		next->set_doors(this, _exit, container, rooms_in_graph);
 	}
 }
 
