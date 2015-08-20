@@ -6,6 +6,14 @@ const int MAX_DOORS = 8;
 
 class graph; //forward declaration
 
+struct grid
+{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+};
+
 class room
 {
 public:
@@ -18,11 +26,13 @@ public:
 	void insert(room * source);
 	void display(std::ofstream& output);
 	void set_doors(room * _entrance, room * _exit, graph * container, int rooms_in_graph);
+	void set_door_locations();
 	room * get_next();
 
 private:
 	room * next;
 	room * doors[MAX_DOORS];
+	grid door_location[MAX_DOORS];
 	void display(room * source, std::ofstream& output);
 	int perimeter;
 	int prize;

@@ -4,7 +4,6 @@
 #include <ctime>
 #include <string>
 
-
 using namespace std;
 
 const int MAX_WIDTH = 12;
@@ -17,8 +16,8 @@ const int CHANCE_OF_HALLWAY = 5; //1 in x chance
 graph::graph()
 {
 	root = NULL;
-	entrance = new room;
-	exit = new room(true);
+	entrance = NULL;
+	exit = NULL;
 	number_rooms = 0;
 }
 
@@ -49,6 +48,9 @@ void graph::destroy(room * source)
 void graph::generate(int num_rooms)
 {
 	srand(time(NULL));
+
+	entrance = new room(0, 0, false, 7, 7, 0, 0, 0);
+	exit = new room(true);
 
 	//Initialize parameters
 	int priz = 0;
@@ -124,6 +126,7 @@ void graph::generate(int num_rooms)
 
 	//build the adjacentcy list of doors for each room once the graph is built
 	root->set_doors(entrance, exit, this, num_rooms);
+	root->set_door_locations();
 
 }
 

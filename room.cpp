@@ -2,7 +2,6 @@
 #include "graph.h"
 #include <cstdlib>
 #include <ctime>
-//#include <fstream>
 
 using namespace std;
 
@@ -19,10 +18,14 @@ room::room()
 	number_doors = 0;
 	room_number = 0;
 	next = NULL;
-
+	
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
+		door_location[i].x1 = 0;
+		door_location[i].y1 = 0;
+		door_location[i].x2 = 0;
+		door_location[i].y2 = 0;
 	}
 	
 }
@@ -44,6 +47,10 @@ room::room(bool is_exit)
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
+		door_location[i].x1 = 0;
+		door_location[i].y1 = 0;
+		door_location[i].x2 = 0;
+		door_location[i].y2 = 0;
 	}
 	
 }
@@ -65,6 +72,10 @@ room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dis
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
+		door_location[i].x1 = 0;
+		door_location[i].y1 = 0;
+		door_location[i].x2 = 0;
+		door_location[i].y2 = 0;
 	}
 }
 
@@ -125,6 +136,80 @@ void room::set_doors(room * _entrance, room * _exit, graph * container, int room
 	if(next)
 	{
 		next->set_doors(this, _exit, container, rooms_in_graph);
+		next->set_door_locations();
+	}
+}
+
+//Base doors off of cardinal direction. NW wall etc...
+//Base rooms off door to previous room.
+//The whole map can be figured out by door locations and room dimensions.
+void room::set_door_locations()
+{
+	int wall = 0;
+
+	for(int i = 0; i < number_doors; i++)
+	{
+		wall = rand()%4+1;//Random: 1-4;
+
+		//North Wall
+		if(wall == 1)
+		{
+			door_location[i].x1 = width - (rand()%width);
+
+			if(door_location[i].x1 > 0)
+			{
+				door_location[i].x2 = door_location[i].x1-1;
+			}
+			else
+			{
+				door_location[i].x2 = 1;
+			}
+
+			door_location[i].y1 = height;
+			door_location[i].y2 = height;
+		}
+		else if(wall == 2)
+		{
+			door_location[i].y1 = height - (rand()%height);
+
+			if(door_location[i].y1 > 0)
+			{
+				door_location[i].y2 = door_location[i].y1-1;
+			}
+			else
+			{
+				door_location[i].y2 = 1;
+			}
+
+			door_location[i].x1 = width;
+			door_location[i].x2 = width;
+		}
+		else if(wall == 3)
+		{
+			door_location[i].y1 = height - (rand()%height);
+
+			if(door_location[i].y1 > 0)
+			{
+				door_location[i].y2 = door_location[i].y1-1;
+			}
+			else
+			{
+				door_location[i].y2 = 1;
+			}
+		}
+		else if(wall == 4)
+		{
+			door_location[i].y1 = height - (rand()%height);
+
+			if(door_location[i].y1 > 0)
+			{
+				door_location[i].y2 = door_location[i].y1-1;
+			}
+			else
+			{
+				door_location[i].y2 = 1;
+			}
+		}
 	}
 }
 
@@ -188,6 +273,7 @@ void room::display(room * source, ofstream& output)
 		for(int i = 0; i < number_doors; i++)
 		{
 			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
+			output << "Door grid: (" << door_location[i].x1 << "," << door_location[i].y1 << ") (" << door_location[i].x2 << "," << door_location[i].y2 << ")" << endl;
 		}
 	}
 	
