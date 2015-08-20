@@ -2,36 +2,8 @@
 #define GRAPH
 #include <fstream>
 
-
-const int ROOMS_LARGE = 100;
-const int ROOMS_MED = 50;
-const int ROOMS_SM = 10;
-const int MAX_DOORS = 8;
-
-enum NUM_ROOMS
-{
-	LARGE,
-	MEDIUM,
-	SMALL
-};
-
 class graph; //forward declaration
 class room; //forward declaration
-
-class linked_list
-{
-public:
-	linked_list();
-	~linked_list();
-
-	void insert();
-
-protected:
-
-private:
-	room * head;
-	room * next;
-};
 
 class room
 {
@@ -68,7 +40,6 @@ class graph
 {
 public:
 	graph();
-	//graph(const graph& source);
 	graph(int rooms);
 	~graph();
 
@@ -79,7 +50,6 @@ public:
 
 private:
 	void destroy(room * source);
-	//void display(room * source);
 	room * root;
 	room * entrance;
 	room * exit;
