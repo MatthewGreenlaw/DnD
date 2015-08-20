@@ -11,7 +11,7 @@ const int MAX_WIDTH = 12;
 const int MIN_WIDTH = 6;
 const int MAX_HEIGHT = 10;
 const int MIN_HEIGHT = 3;
-const int ENEM_CHANCE = 3; //1/10 chance of there being enemies in a room
+const int ENEM_CHANCE = 3; //1/3 chance of there being enemies in a room
 
 graph::graph()
 {
