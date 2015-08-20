@@ -4,7 +4,7 @@
 int main()
 {
 	graph test;
-	test.generate(12);
+	test.generate(5);
 	test.display();
 
 	std::cin.get();

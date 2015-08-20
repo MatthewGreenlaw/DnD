@@ -44,7 +44,7 @@ public:
 
 	void insert(room * source);
 	void display();
-	void set_doors(graph * home, int rooms_in_graph);
+	void set_doors(room * _exit, graph * container, int rooms_in_graph);
 	room * get_next();
 
 private:
@@ -76,11 +76,9 @@ public:
 	void generate(int num_rooms);
 	void insert(room * source);
 	void display();
-	room * get_exit();
 
 private:
 	void destroy(room * source);
-	void set_doors(graph * home, room * source, int rooms_in_graph);
 	void display(room * source);
 	room * root;
 	room * exit;
