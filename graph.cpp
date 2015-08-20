@@ -8,6 +8,7 @@ using namespace std;
 graph::graph()
 {
 	root = NULL;
+	number_rooms = 0;
 }
 
 graph::~graph()
@@ -22,36 +23,71 @@ void graph::generate(int num_rooms)
 {
 	srand (time(NULL));
 
+	//create a number of rooms equal to num_rooms
 	for(int i = 0; i < num_rooms; i++)
 	{
-
+		//Initialize random parameters
 		int priz = rand()%2;
 		int enem = rand()%4;
-		int hall = rand()%2;
-		int widt = rand()%12+6;
-		int heigh = rand()%10+3;
-		int peri = widt*2+heigh*2;
 		int dist = rand();
+		int hall = rand()%2;//Either a 0 or 1
 
+		//Make width and height default to max hallway width. 
+		int widt = 2;
+		int heigh = 2;
+		int peri = 0;
+
+		//If the new room is not a hallway
+		if(hall == 0)
+		{
+
+			widt = rand()%12+6;
+			heigh = rand()%10+3;
+			peri = widt*2+heigh*2;
+		}
+		//If the new room is a hallway
+		else
+		{
+			//Randomize if the hallway will go vertical/horizontal
+			if(rand()%2)
+			{
+				heigh = rand()%10+3;
+				peri = widt*2+heigh*2;
+			}
+			else
+			{
+				widt = rand()%12+6;
+				peri = widt*2+heigh*2;
+			}
+			
+		}
+
+		//Convert random number to bool
 		bool _hall = false;
-
 		if(hall % 2)
 		{
 			_hall = true;
 		}
 
-		room * temp = new room(priz, enem, _hall, widt, heigh, peri, dist);
+		//Create a new room using the above parameters and insert it into the graph
+		room * temp = new room(priz, enem, _hall, widt, heigh, peri, dist, i+1);
 		insert(temp);
 	}
 
-	set_doors(root, num_rooms);
+	//Once the graph is built, build the adjacentcy list of doors for each room
+	room * temp = root;
+	while(temp)
+	{
+		set_doors(this, temp, num_rooms);
+		temp = temp->get_next();
+	}
 }
 
-void graph::set_doors(room * source, int num_rooms)
+void graph::set_doors(graph * home, room * source, int num_rooms)
 {
 	if(source)
 	{
-		source->set_doors(num_rooms);
+		source->set_doors(home, num_rooms);
 	}
 }
 
@@ -65,6 +101,20 @@ void graph::insert(room * source)
 	{
 		root = source;
 	}
+
+	number_rooms++;
+}
+
+room * graph::get_random_room()
+{
+	room * temp = root;
+
+	for(int i = 0; i < rand()%number_rooms; i++)//rand()%number_rooms = a random number from 0 through number_rooms-1
+	{
+		temp = temp->get_next();
+	}
+
+	return temp;
 }
 
 void graph::display()
@@ -77,79 +127,3 @@ void graph::display(room * source)
 	source->display();
 }
 
-room::room()
-{
-	perimeter = 0;
-	prize = 0;
-	enemies = 0;
-	is_hallway = false;
-	width = 0;
-	height = 0;
-	distance = 0;
-	next = NULL;
-}
-
-room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist)
-{
-	perimeter = peri;
-	prize = priz;
-	enemies = enem;
-	is_hallway = hall;
-	width = widt;
-	height = heigh;
-	distance = dist;
-	next = NULL;
-}
-
-room::~room()
-{
-
-}
-
-
-void room::set_doors(int rooms_in_graph)
-{
-	int num_doors = perimeter/10;
-	
-	if(is_hallway)
-	{
-		num_doors = perimeter/5;
-	}
-
-	//this->room
-	//LEFT OFF HERE. I think I am on the wrong track for getting doors setup, but I am working through the process. 
-
-	
-}
-
-void room::insert(room * source)
-{
-	if(this->next)
-	{
-		this->next->insert(source);		
-	}
-	else
-	{
-		this->next = source;
-	}
-}
-
-void room::display()
-{
-	display(this);
-
-	if(next)
-	{
-		next->display();
-	}
-}
-
-void room::display(room * source)
-{
-	if(source)
-	{
-		cout << "Width X Height: " << width << "X" << height << endl;
-		cout << "Hallway: " << is_hallway << endl;
-		//cout << "Number Doors: " << 
-	}
-}

@@ -6,7 +6,7 @@
 const int ROOMS_LARGE = 100;
 const int ROOMS_MED = 50;
 const int ROOMS_SM = 10;
-
+const int MAX_DOORS = 8;
 
 enum NUM_ROOMS
 {
@@ -15,34 +15,52 @@ enum NUM_ROOMS
 	SMALL
 };
 
+class graph; //forward declaration
+class room; //forward declaration
+
+class linked_list
+{
+public:
+	linked_list();
+	~linked_list();
+
+	void insert();
+
+protected:
+
+private:
+	room * head;
+	room * next;
+};
+
 class room
 {
 public:
 
 	room();
-	room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist);
+	room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num);
 	//room(const room& source);
 	~room();
 
 	void insert(room * source);
 	//void generate();
 	void display();
-
-	void set_doors(int rooms_in_graph);
+	void set_doors(graph * home, int rooms_in_graph);
+	room * get_next();
 
 private:
 	room * next;
+	room * doors[MAX_DOORS];
 	void display(room * source);
-	room ** doors [1];
 	int perimeter;
 	int prize;
 	int enemies;
 	bool is_hallway;
 	int width;
 	int height;	
-	int distance;
-
-
+	int distance;//What is this for?
+	int number_doors;
+	int room_number;
 };
 
 class graph
@@ -53,14 +71,16 @@ public:
 	graph(int rooms);
 	~graph();
 
+	room * get_random_room();
 	void generate(int num_rooms);
 	void insert(room * source);
 	void display();
 
 private:
-	void set_doors(room * source, int rooms_in_graph);
+	void set_doors(graph * home, room * source, int rooms_in_graph);
 	void display(room * source);
 	room * root;
+	int number_rooms;
 };
 
 
