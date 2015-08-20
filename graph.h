@@ -38,12 +38,11 @@ class room
 public:
 
 	room();
+	room(bool is_exit);
 	room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num);
-	//room(const room& source);
 	~room();
 
 	void insert(room * source);
-	//void generate();
 	void display();
 	void set_doors(graph * home, int rooms_in_graph);
 	room * get_next();
@@ -55,13 +54,14 @@ private:
 	int perimeter;
 	int prize;
 	int enemies;
-	bool is_hallway;
+	bool hallway;
 	int width;
 	int height;	
 	int distance;//What is this for?
 	int number_doors;
 	int room_number;
 	bool not_already_a_door(room * source, int num_doors);
+	bool exit;
 };
 
 class graph
@@ -76,11 +76,14 @@ public:
 	void generate(int num_rooms);
 	void insert(room * source);
 	void display();
+	room * get_exit();
 
 private:
+	void destroy(room * source);
 	void set_doors(graph * home, room * source, int rooms_in_graph);
 	void display(room * source);
 	room * root;
+	room * exit;
 	int number_rooms;
 };
 

@@ -8,6 +8,7 @@ using namespace std;
 graph::graph()
 {
 	root = NULL;
+	exit = new room(true);
 	number_rooms = 0;
 }
 
@@ -15,7 +16,22 @@ graph::~graph()
 {
 	if(root)
 	{
-		delete root;
+		destroy(root);
+	}
+
+	delete exit;
+}
+
+void graph::destroy(room * source)
+{
+	if(source->get_next())
+	{
+		destroy(source->get_next());
+		delete source;
+	}
+	else
+	{
+		delete source;
 	}
 }
 
@@ -59,7 +75,6 @@ void graph::generate(int num_rooms)
 				widt = rand()%12+6;
 				peri = widt*2+heigh*2;
 			}
-			
 		}
 
 		//Convert random number to bool
@@ -81,6 +96,11 @@ void graph::generate(int num_rooms)
 		set_doors(this, temp, num_rooms);
 		temp = temp->get_next();
 	}
+}
+
+room * graph::get_exit()
+{
+	return exit;
 }
 
 void graph::set_doors(graph * home, room * source, int num_rooms)
