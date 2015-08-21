@@ -1,0 +1,13 @@
+Things to do:
+
+o Figure out what to do about rooms that only go one way 
+	-(IE. Room1 does not go to Room5 but Room5 goes to Room1)
+	-Secret passage?
+	-Fix all together?
+o Add xy coord to rooms
+o Base room coord off door placement to last room
+o Validate incoming rooms fin it availiable space 
+	-if this.x is in the range of last.x through last.x+width... 
+		-move x to fit (would also need to figure out if there is any other threatened space from another room)
+		-add a z coord to signify x is on an upper or lower level and revalidate (would have to figure out stairs)
+o Implement SFML representation

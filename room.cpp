@@ -156,19 +156,19 @@ void room::set_door_locations(room * source)
 		if(i == 0)
 		{
 			//Set doors to match up geographically |Room1| <- door-> |Room-B|
-			if(source->door_location[1].x1 == 0 && source->door_location[i].x2 == 0)//West wall
+			if(source->door_location[1].x1 == 0 && source->door_location[1].x2 == 0)//West wall
 			{
 				wall = 2;//East Wall
 			}
-			else if(source->door_location[i].x1 == source->width && source->door_location[i].x2 == source->width)//East Wall
+			else if(source->door_location[1].x1 == source->width && source->door_location[1].x2 == source->width)//East Wall
 			{
 				wall = 4;//West Wall
 			}
-			else if(source->door_location[i].y1 == 0 && source->door_location[i].y2 == 0)//North Wall
+			else if(source->door_location[1].y1 == 0 && source->door_location[1].y2 == 0)//North Wall
 			{
 				wall = 3;//South Wall
 			}
-			else if(source->door_location[i].y1 == source->height && source->door_location[i].y2 == source->height)//East Wall
+			else if(source->door_location[1].y1 == source->height && source->door_location[1].y2 == source->height)//East Wall
 			{
 				wall = 1;//North Wall
 			}
