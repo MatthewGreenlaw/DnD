@@ -4,7 +4,7 @@
 int main()
 {
 	graph test;
-	test.generate(15);
+	test.generate(5);
 	test.display();
 	return 1;
 }

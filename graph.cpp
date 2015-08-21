@@ -32,7 +32,7 @@ graph::~graph()
 	delete exit;
 }
 
-void graph::destroy(room * source)
+void graph::destroy(vertex * source)
 {
 	if(source->get_next())
 	{
@@ -49,8 +49,8 @@ void graph::generate(int num_rooms)
 {
 	srand(time(NULL));
 
-	entrance = new room(0, 0, false, 7, 7, 0, 0, 0);
-	exit = new room(true);
+	entrance = new vertex(0, 0, false, 7, 7, 0, 0, 0);
+	exit = new vertex(true);
 
 	//Initialize parameters
 	int priz = 0;
@@ -61,7 +61,7 @@ void graph::generate(int num_rooms)
 	int heigh = 0;
 	int peri = 0;
 	bool _hall = false;
-	room * temp = NULL;
+	vertex * temp = NULL;
 	int chance_enem = 0;
 
 
@@ -120,17 +120,17 @@ void graph::generate(int num_rooms)
 		dist = rand();//Unsure why we have distance. Left it a random number
 
 		//Create a new room using the above parameters and insert it into the graph
-		temp = new room(priz, enem, _hall, widt, heigh, peri, dist, i+1);
+		temp = new vertex(priz, enem, _hall, widt, heigh, peri, dist, i+1);
 		insert(temp);
 	}
 
 	//build the adjacentcy list of doors for each room once the graph is built
-	root->set_doors(entrance, exit, this, num_rooms);
-	root->set_door_locations(entrance);
+	root->build_doors(entrance, exit, this, num_rooms);
+	root->build_door_locations(entrance);
 
 }
 
-void graph::insert(room * source)
+void graph::insert(vertex * source)
 {
 	if(root)
 	{
@@ -144,9 +144,9 @@ void graph::insert(room * source)
 	number_rooms++;
 }
 
-room * graph::get_random_room()
+vertex * graph::get_random_room()
 {
-	room * temp = root;
+	vertex * temp = root;
 
 	for(int i = 0; i < rand()%number_rooms; i++)//rand()%number_rooms = Random: 0 - number_rooms-1
 	{

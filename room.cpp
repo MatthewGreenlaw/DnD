@@ -5,93 +5,50 @@
 
 using namespace std;
 
-room::room()
+vertex::vertex()
 {
-	perimeter = 0;
-	prize = 0;
-	enemies = 0;
-	hallway = false;
-	exit = false;
-	width = 0;
-	height = 0;
-	distance = 0;
-	number_doors = 0;
-	room_number = 0;
-	next = NULL;
-	
-	for(int i = 0; i < MAX_DOORS; i++)
-	{
-		doors[i] = NULL;
-		door_location[i].x1 = 0;
-		door_location[i].y1 = 0;
-		door_location[i].x2 = 0;
-		door_location[i].y2 = 0;
-	}
-	
-}
-
-room::room(bool is_exit)
-{
-	perimeter = 0;
-	prize = 0;
-	enemies = 0;
-	hallway = false;
-	exit = is_exit;
-	width = 0;
-	height = 0;
-	distance = 0;
-	number_doors = 0;
-	room_number = 0;
 	next = NULL;
 
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
-		door_location[i].x1 = 1;
-		door_location[i].y1 = 1;
-		door_location[i].x2 = 1;
-		door_location[i].y2 = 1;
 	}
-	
 }
 
-room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num)
+vertex::vertex(bool is_exit):room(is_exit)
 {
-	perimeter = peri;
-	prize = priz;
-	enemies = enem;
-	hallway = hall;
-	exit = false;
-	width = widt;
-	height = heigh;
-	distance = dist;
-	number_doors = 0;
-	room_number = num;
 	next = NULL;
 
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
-		door_location[i].x1 = 0;
-		door_location[i].y1 = 0;
-		door_location[i].x2 = 0;
-		door_location[i].y2 = 0;
 	}
 }
 
-room::~room()
+vertex::vertex(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num):room(priz, enem, hall, widt, heigh, peri, dist, num)
+{
+	next = NULL;
+
+	for(int i = 0; i < MAX_DOORS; i++)
+	{
+		doors[i] = NULL;
+	}
+}
+
+vertex::~vertex()
 {
 
 }
 
-room * room::get_next()
+
+vertex * vertex::get_next()
 {
 	return next;
 }
 
-void room::set_doors(room * _entrance, room * _exit, graph * container, int rooms_in_graph)
+void vertex::build_doors(vertex * _entrance, vertex * _exit, graph * container, int rooms_in_graph)
 {
-	room * temp = NULL;
+	vertex * temp = NULL;
 	int doors_to_add = 0;
 
 	if(hallway)
@@ -135,15 +92,152 @@ void room::set_doors(room * _entrance, room * _exit, graph * container, int room
 
 	if(next)
 	{
-		next->set_doors(this, _exit, container, rooms_in_graph);
-		next->set_door_locations(this);
+		next->build_doors(this, _exit, container, rooms_in_graph);
+		next->build_door_locations(this);
+	}
+}
+
+//Prevents creating pointers to duplicate doors
+bool vertex::not_already_a_door(vertex * source, int num_doors)
+{
+	for(int i = 0; i < num_doors; i++)
+	{
+		if(source == doors[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void vertex::insert(vertex * source)
+{
+	if(this->next)
+	{
+		this->next->insert(source);		
+	}
+	else
+	{
+		this->next = source;
+	}
+}
+
+void vertex::display(ofstream& output)
+{
+	display(this, output);
+
+	if(next)
+	{
+		next->display(output);
+	}
+}
+
+void vertex::display(vertex * source, ofstream& output)
+{
+	
+
+	if(source)
+	{
+		//output << time << endl;
+		output << "************************************" << endl;
+		output << "Room: " << room_number;
+		if(hallway)
+		{
+			output << " (Hallway)" << endl;
+		}
+		else
+		{
+			output << endl;
+		}
+
+		output << "Width X Height: " << width << "X" << height << endl;
+		output << "#Enemies: " << enemies << endl;
+		output << "Loot: " << prize << endl;
+		output << "Number of doors: " << number_doors << endl;
+		for(int i = 0; i < number_doors; i++)
+		{
+			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
+			output << "Door grid: (" << door_location[i].x1 << "," << door_location[i].y1 << ") (" << door_location[i].x2 << "," << door_location[i].y2 << ")" << endl;
+		}
+	}
+	
+}
+
+
+room::room()
+{
+	perimeter = 0;
+	prize = 0;
+	enemies = 0;
+	hallway = false;
+	exit = false;
+	width = 0;
+	height = 0;
+	distance = 0;
+	number_doors = 0;
+	room_number = 0;
+	
+	
+	for(int i = 0; i < MAX_DOORS; i++)
+	{
+		door_location[i].x1 = 0;
+		door_location[i].y1 = 0;
+		door_location[i].x2 = 0;
+		door_location[i].y2 = 0;
+	}
+	
+}
+
+room::room(bool is_exit)
+{
+	perimeter = 0;
+	prize = 0;
+	enemies = 0;
+	hallway = false;
+	exit = is_exit;
+	width = 0;
+	height = 0;
+	distance = 0;
+	number_doors = 0;
+	room_number = 0;
+
+	for(int i = 0; i < MAX_DOORS; i++)
+	{
+		door_location[i].x1 = 1;
+		door_location[i].y1 = 1;
+		door_location[i].x2 = 1;
+		door_location[i].y2 = 1;
+	}
+	
+}
+
+room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num)
+{
+	perimeter = peri;
+	prize = priz;
+	enemies = enem;
+	hallway = hall;
+	exit = false;
+	width = widt;
+	height = heigh;
+	distance = dist;
+	number_doors = 0;
+	room_number = num;
+
+	for(int i = 0; i < MAX_DOORS; i++)
+	{
+		door_location[i].x1 = 0;
+		door_location[i].y1 = 0;
+		door_location[i].x2 = 0;
+		door_location[i].y2 = 0;
 	}
 }
 
 //Base doors off of cardinal direction. NW wall etc...
 //Base rooms off door to previous room.
 //The whole map can be figured out by door locations and room dimensions.
-void room::set_door_locations(room * source)
+void room::build_door_locations(room * source)
 {
 	int wall = 0;
 
@@ -273,71 +367,4 @@ bool room::duplicate_door_location()
 		}
 
 	return false;
-}
-
-//Prevents creating pointers to duplicate doors
-bool room::not_already_a_door(room * source, int num_doors)
-{
-	for(int i = 0; i < num_doors; i++)
-	{
-		if(source == doors[i])
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-void room::insert(room * source)
-{
-	if(this->next)
-	{
-		this->next->insert(source);		
-	}
-	else
-	{
-		this->next = source;
-	}
-}
-
-void room::display(ofstream& output)
-{
-	display(this, output);
-
-	if(next)
-	{
-		next->display(output);
-	}
-}
-
-void room::display(room * source, ofstream& output)
-{
-	
-
-	if(source)
-	{
-		//output << time << endl;
-		output << "************************************" << endl;
-		output << "Room: " << room_number;
-		if(hallway)
-		{
-			output << " (Hallway)" << endl;
-		}
-		else
-		{
-			output << endl;
-		}
-
-		output << "Width X Height: " << width << "X" << height << endl;
-		output << "#Enemies: " << enemies << endl;
-		output << "Loot: " << prize << endl;
-		output << "Number of doors: " << number_doors << endl;
-		for(int i = 0; i < number_doors; i++)
-		{
-			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
-			output << "Door grid: (" << door_location[i].x1 << "," << door_location[i].y1 << ") (" << door_location[i].x2 << "," << door_location[i].y2 << ")" << endl;
-		}
-	}
-	
 }
