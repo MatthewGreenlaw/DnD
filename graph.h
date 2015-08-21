@@ -22,12 +22,37 @@ o The graph class:
 const int MAX_DOORS = 8;
 
 class graph; //forward declaration
+class room;
 
-class grid
+class door_coordinate
 {
 public:
+	door_coordinate();
+	door_coordinate(room * container);
+
+	//helpers
+	bool is_north_wall();
+	bool is_south_wall();
+	bool is_west_wall();
+	bool is_east_wall();
+	bool is_itialized();
+
+	//Mutators
+	void reset();
+	void build_north_wall();
+	void build_south_wall();
+	void build_east_wall();
+	void build_west_wall();
+
+	//Debugging
+	void display(std::ofstream& output);
+
+	//Operator Overloads
+	bool operator == (const door_coordinate&) const;
 
 private:
+	int container_width;
+	int container_height;
 	int x1;
 	int y1;
 	int x2;
@@ -41,6 +66,11 @@ public:
 	room();
 	room(bool is_exit);//used to build the exit room
 	room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num);//Used to insert random rooms
+	~room();
+
+	//Getters/setters
+	int get_width();
+	int get_height();
 
 	//Mutators
 	void build_door_locations(room * source);
@@ -50,7 +80,7 @@ protected:
 	bool duplicate_door_location();
 
 	//Abstract Data Members
-	grid door_location[MAX_DOORS];//Pair of xy coordinates creating a vector representing the door
+	door_coordinate * door_location[MAX_DOORS];//Pair of xy coordinates creating a vector representing the door
 	int prize;//Build this into an ADT
 	int enemies;//Build this into an ADT
 	
