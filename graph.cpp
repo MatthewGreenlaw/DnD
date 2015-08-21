@@ -126,7 +126,7 @@ void graph::generate(int num_rooms)
 
 	//build the adjacentcy list of doors for each room once the graph is built
 	root->set_doors(entrance, exit, this, num_rooms);
-	root->set_door_locations();
+	root->set_door_locations(entrance);
 
 }
 

@@ -26,7 +26,7 @@ public:
 	void insert(room * source);
 	void display(std::ofstream& output);
 	void set_doors(room * _entrance, room * _exit, graph * container, int rooms_in_graph);
-	void set_door_locations();
+	void set_door_locations(room * source);
 	room * get_next();
 
 private:
@@ -44,6 +44,7 @@ private:
 	int number_doors;
 	int room_number;
 	bool not_already_a_door(room * source, int num_doors);
+	bool duplicate_door_location();
 	bool exit;
 };
 

@@ -47,10 +47,10 @@ room::room(bool is_exit)
 	for(int i = 0; i < MAX_DOORS; i++)
 	{
 		doors[i] = NULL;
-		door_location[i].x1 = 0;
-		door_location[i].y1 = 0;
-		door_location[i].x2 = 0;
-		door_location[i].y2 = 0;
+		door_location[i].x1 = 1;
+		door_location[i].y1 = 1;
+		door_location[i].x2 = 1;
+		door_location[i].y2 = 1;
 	}
 	
 }
@@ -136,20 +136,43 @@ void room::set_doors(room * _entrance, room * _exit, graph * container, int room
 	if(next)
 	{
 		next->set_doors(this, _exit, container, rooms_in_graph);
-		next->set_door_locations();
+		next->set_door_locations(this);
 	}
 }
 
 //Base doors off of cardinal direction. NW wall etc...
 //Base rooms off door to previous room.
 //The whole map can be figured out by door locations and room dimensions.
-void room::set_door_locations()
+void room::set_door_locations(room * source)
 {
 	int wall = 0;
 
 	for(int i = 0; i < number_doors; i++)
 	{
+		//cout << this->room_number << " Probe1 " << i << endl;
+
 		wall = rand()%4+1;//Random: 1-4;
+
+		if(i == 0)
+		{
+			//Set doors to match up geographically |Room1| <- door-> |Room-B|
+			if(source->door_location[1].x1 == 0 && source->door_location[i].x2 == 0)//West wall
+			{
+				wall = 2;//East Wall
+			}
+			else if(source->door_location[i].x1 == source->width && source->door_location[i].x2 == source->width)//East Wall
+			{
+				wall = 4;//West Wall
+			}
+			else if(source->door_location[i].y1 == 0 && source->door_location[i].y2 == 0)//North Wall
+			{
+				wall = 3;//South Wall
+			}
+			else if(source->door_location[i].y1 == source->height && source->door_location[i].y2 == source->height)//East Wall
+			{
+				wall = 1;//North Wall
+			}
+		}
 
 		//North Wall
 		if(wall == 1)
@@ -210,9 +233,49 @@ void room::set_door_locations()
 				door_location[i].y2 = 1;
 			}
 		}
+
+		if(duplicate_door_location())
+		{
+			door_location[i].x1 = 0;
+			door_location[i].y1 = 0;
+			door_location[i].x2 = 0;
+			door_location[i].y2 = 0;
+			i--;
+		}
 	}
 }
 
+//true if the room has two doors at the same geographic location.
+bool room::duplicate_door_location()
+{
+	for(int i = 0; i < number_doors; i++)
+	{
+		for(int j = 0; j < number_doors; j++)
+		{
+			if(i != j)
+			{
+				if(
+					door_location[i].x1 == door_location[j].x1 &&
+					door_location[i].x2 == door_location[j].x2 &&
+					door_location[i].y1 == door_location[j].y1 &&
+					door_location[i].y2 == door_location[j].y2 &&
+					door_location[i].x1 !=0 && 
+					door_location[i].x2 !=0 && 
+					door_location[i].y1 !=0 && 
+					door_location[i].y2 !=0
+					)
+					{
+						//cout << this->room_number << " Probe0 " << i << j << endl;
+						return true;
+					}
+				}
+			}
+		}
+
+	return false;
+}
+
+//Prevents creating pointers to duplicate doors
 bool room::not_already_a_door(room * source, int num_doors)
 {
 	for(int i = 0; i < num_doors; i++)
@@ -269,7 +332,7 @@ void room::display(room * source, ofstream& output)
 		output << "Width X Height: " << width << "X" << height << endl;
 		output << "#Enemies: " << enemies << endl;
 		output << "Loot: " << prize << endl;
-
+		output << "Number of doors: " << number_doors << endl;
 		for(int i = 0; i < number_doors; i++)
 		{
 			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
