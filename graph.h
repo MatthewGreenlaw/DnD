@@ -36,6 +36,7 @@ public:
 	bool is_west_wall();
 	bool is_east_wall();
 	bool is_itialized();
+	bool same_as(door_coordinate * source);
 
 	//Mutators
 	void reset();

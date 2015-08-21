@@ -10,10 +10,10 @@ bool door_coordinate::operator == (const door_coordinate& source) const
 		y2 == source.y2
 		)
 	{
-		return true;
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 door_coordinate::door_coordinate()
@@ -83,6 +83,22 @@ bool door_coordinate::is_east_wall()
 
 	return false;
 }
+
+bool door_coordinate::same_as(door_coordinate * source)
+{
+	if(
+		x1 == source->x1 &&
+		x2 == source->x2 &&
+		y1 == source->y1 &&
+		y2 == source->y2
+		)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 void door_coordinate::build_north_wall()
 {
@@ -159,7 +175,7 @@ bool door_coordinate::is_itialized()
 	}
 	
 	return false;
-}
+//}
 
 void door_coordinate::display(std::ofstream& output)
 {

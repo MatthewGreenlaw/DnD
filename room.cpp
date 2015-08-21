@@ -305,10 +305,12 @@ bool room::duplicate_door_location()
 		{
 			if(i != j)
 			{
-				if(door_location[i] == door_location[j] && door_location[i]->is_itialized())
+				if(door_location[i]->same_as(door_location[j]) && door_location[i]->is_itialized())
 				{
+
 					//cout << this->room_number << " Probe0 " << i << j << endl;
 					return true;
+
 				}
 			}
 		}
