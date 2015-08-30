@@ -47,15 +47,14 @@ void graph::destroy(vertex * source)
 
 void graph::generate(int num_rooms)
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned>(time(NULL)));
 
-	entrance = new vertex(0, 0, false, 7, 7, 0, 0, 0);
+	entrance = new vertex(0, 0, false, 7, 7, 0, 0);
 	exit = new vertex(true);
 
 	//Initialize parameters
 	int priz = 0;
 	int enem = 0;
-	int dist = 0;
 	int hall = 0;
 	int widt = 0;
 	int heigh = 0;
@@ -71,7 +70,6 @@ void graph::generate(int num_rooms)
 		//reset parameters
 		priz = 0;
 		enem = 0;
-		dist = 0;
 		_hall = false;
 		temp = NULL;
 		chance_enem = 0;
@@ -117,10 +115,8 @@ void graph::generate(int num_rooms)
 			if(enem > 0) priz = rand()%(enem*2);//Random: 0-(enemies*2)
 		}
 
-		dist = rand();//Unsure why we have distance. Left it a random number
-
 		//Create a new room using the above parameters and insert it into the graph
-		temp = new vertex(priz, enem, _hall, widt, heigh, peri, dist, i+1);
+		temp = new vertex(priz, enem, _hall, widt, heigh, peri, i);
 		insert(temp);
 	}
 
@@ -144,11 +140,28 @@ void graph::insert(vertex * source)
 	number_rooms++;
 }
 
+int graph::get_num_rooms()
+{
+	return number_rooms;
+}
+
 vertex * graph::get_random_room()
 {
 	vertex * temp = root;
 
 	for(int i = 0; i < rand()%number_rooms; i++)//rand()%number_rooms = Random: 0 - number_rooms-1
+	{
+		temp = temp->get_next();
+	}
+
+	return temp;
+}
+
+vertex * graph::at(int n)
+{
+	vertex * temp = root;
+
+	for(int i = 0; i < n; i++)
 	{
 		temp = temp->get_next();
 	}
