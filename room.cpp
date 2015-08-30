@@ -25,7 +25,7 @@ vertex::vertex(bool is_exit):room(is_exit)
 	}
 }
 
-vertex::vertex(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num):room(priz, enem, hall, widt, heigh, peri, dist, num)
+vertex::vertex(int priz, int enem, bool hall, int widt, int heigh, int peri, int num):room(priz, enem, hall, widt, heigh, peri, num)
 {
 	next = NULL;
 
@@ -59,7 +59,7 @@ void vertex::build_doors(vertex * _entrance, vertex * _exit, graph * container, 
 	{
 		doors_to_add = perimeter/10;
 	}
-	
+
 	//point first door to the next room if there is one
 	if(this->next)
 	{
@@ -135,7 +135,7 @@ void vertex::display(ofstream& output)
 
 void vertex::display(vertex * source, ofstream& output)
 {
-	
+
 
 	if(source)
 	{
@@ -159,10 +159,10 @@ void vertex::display(vertex * source, ofstream& output)
 		{
 			output << "Door " << i+1 << " leads to room # " << doors[i]->room_number << "." << endl;
 			output << "Door grid: ";
-			door_location[i]->display(output);
+			
 		}
 	}
-	
+
 }
 
 
@@ -175,7 +175,6 @@ room::room()
 	exit = false;
 	width = 0;
 	height = 0;
-	distance = 0;
 	number_doors = 0;
 	room_number = 0;	
 }
@@ -189,7 +188,6 @@ room::room(bool is_exit)
 	exit = is_exit;
 	width = 0;
 	height = 0;
-	distance = 0;
 	number_doors = 0;
 	room_number = 0;
 
@@ -199,7 +197,7 @@ room::room(bool is_exit)
 	}
 }
 
-room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dist, int num)
+room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int num)
 {
 	perimeter = peri;
 	prize = priz;
@@ -208,10 +206,9 @@ room::room(int priz, int enem, bool hall, int widt, int heigh, int peri, int dis
 	exit = false;
 	width = widt;
 	height = heigh;
-	distance = dist;
 	number_doors = 0;
 	room_number = num;
-	
+
 
 	for(int i = 0; i < MAX_DOORS-1; i++)
 	{
@@ -224,14 +221,87 @@ room::~room()
 
 }
 
+int room::get_width()
+{
+	return width;
+}
+
+void room::set_width(int w)
+{
+	width = w;
+}
+
 int room::get_height()
 {
 	return height;
 }
 
-int room::get_width()
+void room::set_height(int h)
 {
-	return width;
+	height = h;
+}
+
+int room::get_room_number()
+{
+	return room_number;
+}
+
+void room::set_room_number(int n)
+{
+	room_number = n;
+}
+
+int room::get_perimeter()
+{
+	return perimeter;
+}
+
+void room::set_perimeter(int p)
+{
+	perimeter = p;
+}
+
+int room::get_num_doors()
+{
+	return number_doors;
+}
+
+void room::set_num_doors(int n)
+{
+	number_doors = n;
+}
+
+bool room::get_hallway()
+{
+	return hallway;
+}
+
+void room::set_hallway(bool h)
+{
+	hallway = h;
+}
+
+bool room::get_exit()
+{
+	return exit;
+}
+
+void room::set_exit(bool e)
+{
+	exit = e;
+}
+
+std::string room::get_door_side_at(int loc)
+{
+	return door_location[loc]->get_door_side();
+}
+
+void room::get_door_loc_at(int loc, sf::Vector2f& point1, sf::Vector2f& point2)
+{
+	point1.x = (float)door_location[loc]->get_x1();
+	point2.x = (float)door_location[loc]->get_x2();
+	point1.y = (float)door_location[loc]->get_y1();
+	point2.y = (float)door_location[loc]->get_y2();
 }
 
 //Base doors off of cardinal direction. NW wall etc...
@@ -239,13 +309,12 @@ int room::get_width()
 //The whole map can be figured out by door locations and room dimensions.
 void room::build_door_locations(room * source)
 {
-
+	//srand(static_cast<unsigned>(time(NULL)));
 	int wall = 0;
 
 	for(int i = 0; i < number_doors; i++)
 	{
-		//cout << this->room_number << " Probe1 " << i << endl;
-
+		
 		wall = rand()%4+1;//Random: 1-4;
 
 		//Determine placement for first door based off door from last room
@@ -270,22 +339,25 @@ void room::build_door_locations(room * source)
 			}
 		}
 
-		//North Wall
-		if(wall == 1)
+		if(wall == 1)//North Wall
 		{
 			door_location[i]->build_north_wall();
+			door_location[i]->set_door_side("north");
 		}
-		else if(wall == 2)
+		else if(wall == 2)// East Wall
 		{
 			door_location[i]->build_east_wall();
+			door_location[i]->set_door_side("east");
 		}
-		else if(wall == 3)
+		else if(wall == 3)// South Wall
 		{
 			door_location[i]->build_south_wall();
+			door_location[i]->set_door_side("south");
 		}
-		else if(wall == 4)
+		else if(wall == 4)// West Wall
 		{
 			door_location[i]->build_west_wall();
+			door_location[i]->set_door_side("west");
 		}
 
 		if(duplicate_door_location())
@@ -293,6 +365,10 @@ void room::build_door_locations(room * source)
 			door_location[i]->reset();
 			i--;
 		}
+
+		std::cout << "Room: " << room_number << std::endl;
+		std::cout << door_location[i]->get_door_side() << std::endl;
+		door_location[i]->display();
 	}
 }
 
@@ -305,7 +381,7 @@ bool room::duplicate_door_location()
 		{
 			if(i != j)
 			{
-				if(door_location[i]->same_as(door_location[j]) && door_location[i]->is_itialized())
+				if(door_location[i]->same_as(door_location[j]) && door_location[i]->is_initialized())
 				{
 
 					//cout << this->room_number << " Probe0 " << i << j << endl;
